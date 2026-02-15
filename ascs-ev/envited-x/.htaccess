@@ -13,7 +13,7 @@ RewriteEngine on
 
 # =============================================================================
 # ENVITED-X Simulation Asset Ontologies - Static GitHub Pages resolution
-# Pattern: /ascs-ev/envited-x/{ontology}/{version}[/][shapes]
+# Pattern: /ascs-ev/envited-x/{ontology}/{version}[/][shapes|context]
 # Target:  ascs-ev.github.io/ontology-management-base/w3id/ascs-ev/envited-x/...
 # =============================================================================
 
@@ -52,6 +52,16 @@ RewriteRule ^([^/]+)/?$ https://ascs-ev.github.io/ontology-management-base/w3id/
 RewriteCond %{HTTP_ACCEPT} application/ld\+json [OR]
 RewriteCond %{HTTP_ACCEPT} application/json
 RewriteRule ^([^/]+)/?$ https://ascs-ev.github.io/ontology-management-base/w3id/ascs-ev/envited-x/$1/latest/context.jsonld [R=303,L]
+
+# --- Context sub-path (direct URL for JSON-LD @context references) ---
+# JSON-LD processors fetch @context URLs with a plain GET (no Accept header),
+# so these rules have no content-negotiation guard.
+
+# Versioned context
+RewriteRule ^([^/]+)/(v[0-9]+|latest)/context/?$ https://ascs-ev.github.io/ontology-management-base/w3id/ascs-ev/envited-x/$1/$2/context.jsonld [R=303,L]
+
+# Bare context (no version) → latest
+RewriteRule ^([^/]+)/context/?$ https://ascs-ev.github.io/ontology-management-base/w3id/ascs-ev/envited-x/$1/latest/context.jsonld [R=303,L]
 
 # -----------------------------------------------------------------------------
 # HTML fallback — redirect browsers to MkDocs documentation pages
